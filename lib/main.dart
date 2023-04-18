@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:untitled1/chart.dart';
 import 'package:untitled1/nav.dart';
 
 void main() {
@@ -12,7 +11,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return const MaterialApp(
       home:HomeScreen(),
     );
   }
