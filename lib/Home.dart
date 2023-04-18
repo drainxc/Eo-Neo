@@ -25,6 +25,46 @@ class MyStatefulWidget extends StatefulWidget {
 }
 
 class _MyStatefulWidgetState extends State<MyStatefulWidget> {
+  List _select = [true, false, false, false];
+  List<Map<String, dynamic>> kind = [
+    {
+      "icon": const Icon(
+        Icons.feed,
+        color: Color(0xffFBC00A),
+        size: 30,
+      ),
+      "title": "Basic",
+      "color": const Color(0xffFBC00A),
+    },
+    {
+      "icon": const Icon(
+        Icons.language,
+        color: Color(0xffE4101E),
+        size: 30,
+      ),
+      "title": "Language",
+      "color": const Color(0xffE4101E),
+    },
+    {
+      "icon": const Icon(
+        Icons.message,
+        color: Color(0xff37B0E5),
+        size: 30,
+      ),
+      "title": "Conversation",
+      "color": const Color(0xff37B0E5),
+    },
+    {
+      "icon": const Icon(
+        Icons.hdr_auto_sharp,
+        color: Color(0xff72B42C),
+        size: 30,
+      ),
+      "title": "Word",
+      "color": const Color(0xff72B42C),
+    }
+  ];
+
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
@@ -114,12 +154,12 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
                                     ),
                                   ),
                                 ),
-                                Chart(),
                                 Container(
                                     transform: Matrix4.translationValues(
                                         -width * 0.15, -30, 0),
                                     width: width * 0.3,
                                     height: 28,
+                                    margin: const EdgeInsets.only(top: 80),
                                     decoration: const BoxDecoration(
                                       color: Color(0xffe4101e),
                                       borderRadius: BorderRadius.all(
@@ -143,349 +183,15 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Container(
-                          width: width * 0.37,
-                          height: width * 0.35,
-                          decoration: BoxDecoration(
-                            color: const Color(0xfff6f6f6),
-                            boxShadow: const [
-                              BoxShadow(
-                                color: Color.fromRGBO(0, 0, 0, 0.25),
-                                blurRadius: 5.0,
-                                spreadRadius: 0.0,
-                              )
-                            ],
-                            borderRadius: BorderRadius.circular(5),
-                          ),
-                          margin: const EdgeInsets.fromLTRB(0, 0, 0, 20),
-                          child: Column(
-                            children: [
-                              Container(
-                                margin: const EdgeInsets.only(top: 20),
-                                width: 47,
-                                height: 47,
-                                decoration: BoxDecoration(
-                                  color: const Color(0xfff6f6f6),
-                                  boxShadow: const [
-                                    BoxShadow(
-                                      color: Color.fromRGBO(0, 0, 0, 0.25),
-                                      blurRadius: 5.0,
-                                      spreadRadius: 0.0,
-                                    )
-                                  ],
-                                  borderRadius: BorderRadius.circular(50),
-                                ),
-                                child: const Icon(
-                                  Icons.feed,
-                                  color: Color(0xffFBC00A),
-                                  size: 30,
-                                ),
-                              ),
-                              Container(
-                                margin: const EdgeInsets.only(top: 10),
-                                child: Column(
-                                  children: [
-                                    const Text(
-                                      "Basic",
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.w700,
-                                      ),
-                                    ),
-                                    Container(
-                                      margin: const EdgeInsets.only(top: 3),
-                                      child: const Text(
-                                        "0/5",
-                                        style: TextStyle(fontSize: 10),
-                                      ),
-                                    ),
-                                    Stack(
-                                      children: [
-                                        Container(
-                                          margin: const EdgeInsets.only(top: 7),
-                                          width: width * 0.3,
-                                          height: 8,
-                                          decoration: BoxDecoration(
-                                            color: const Color(0xffdddddd),
-                                            borderRadius:
-                                                BorderRadius.circular(5),
-                                          ),
-                                        ),
-                                        Container(
-                                          margin: const EdgeInsets.only(top: 7),
-                                          width: width * 0.1,
-                                          height: 8,
-                                          decoration: BoxDecoration(
-                                            color: const Color(0xffFBC00A),
-                                            borderRadius:
-                                                BorderRadius.circular(5),
-                                          ),
-                                        ),
-                                      ],
-                                    )
-                                  ],
-                                ),
-                              )
-                            ],
-                          ),
-                        ),
-                        Container(
-                          width: width * 0.37,
-                          height: width * 0.35,
-                          decoration: BoxDecoration(
-                            color: const Color(0xfff6f6f6),
-                            boxShadow: const [
-                              BoxShadow(
-                                color: Color.fromRGBO(0, 0, 0, 0.25),
-                                blurRadius: 5.0,
-                                spreadRadius: 0.0,
-                              )
-                            ],
-                            borderRadius: BorderRadius.circular(5),
-                          ),
-                          margin: const EdgeInsets.fromLTRB(0, 0, 0, 20),
-                          child: Column(
-                            children: [
-                              Container(
-                                margin: const EdgeInsets.only(top: 20),
-                                width: 47,
-                                height: 47,
-                                decoration: BoxDecoration(
-                                  color: const Color(0xfff6f6f6),
-                                  boxShadow: const [
-                                    BoxShadow(
-                                      color: Color.fromRGBO(0, 0, 0, 0.25),
-                                      blurRadius: 5.0,
-                                      spreadRadius: 0.0,
-                                    )
-                                  ],
-                                  borderRadius: BorderRadius.circular(50),
-                                ),
-                                child: const Icon(
-                                  Icons.language,
-                                  color: Color(0xffE4101E),
-                                  size: 30,
-                                ),
-                              ),
-                              Container(
-                                margin: const EdgeInsets.only(top: 10),
-                                child: Column(
-                                  children: [
-                                    const Text(
-                                      "Languege",
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.w700,
-                                      ),
-                                    ),
-                                    Container(
-                                      margin: const EdgeInsets.only(top: 3),
-                                      child: const Text(
-                                        "0/5",
-                                        style: TextStyle(fontSize: 10),
-                                      ),
-                                    ),
-                                    Stack(
-                                      children: [
-                                        Container(
-                                          margin: const EdgeInsets.only(top: 7),
-                                          width: width * 0.3,
-                                          height: 8,
-                                          decoration: BoxDecoration(
-                                            color: const Color(0xffdddddd),
-                                            borderRadius:
-                                                BorderRadius.circular(5),
-                                          ),
-                                        ),
-                                        Container(
-                                          margin: const EdgeInsets.only(top: 7),
-                                          width: width * 0.1,
-                                          height: 8,
-                                          decoration: BoxDecoration(
-                                            color: const Color(0xffE4101E),
-                                            borderRadius:
-                                                BorderRadius.circular(5),
-                                          ),
-                                        ),
-                                      ],
-                                    )
-                                  ],
-                                ),
-                              )
-                            ],
-                          ),
-                        ),
+                        Box(width, 0),
+                        Box(width, 1),
                       ],
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Container(
-                          width: width * 0.37,
-                          height: width * 0.35,
-                          decoration: BoxDecoration(
-                            color: const Color(0xfff6f6f6),
-                            boxShadow: const [
-                              BoxShadow(
-                                color: Color.fromRGBO(0, 0, 0, 0.25),
-                                blurRadius: 5.0,
-                                spreadRadius: 0.0,
-                              )
-                            ],
-                            borderRadius: BorderRadius.circular(5),
-                          ),
-                          child: Column(
-                            children: [
-                              Container(
-                                margin: const EdgeInsets.only(top: 20),
-                                width: 47,
-                                height: 47,
-                                decoration: BoxDecoration(
-                                  color: const Color(0xfff6f6f6),
-                                  boxShadow: const [
-                                    BoxShadow(
-                                      color: Color.fromRGBO(0, 0, 0, 0.25),
-                                      blurRadius: 5.0,
-                                      spreadRadius: 0.0,
-                                    )
-                                  ],
-                                  borderRadius: BorderRadius.circular(50),
-                                ),
-                                child: const Icon(
-                                  Icons.message,
-                                  color: Color(0xff37B0E5),
-                                  size: 30,
-                                ),
-                              ),
-                              Container(
-                                margin: const EdgeInsets.only(top: 10),
-                                child: Column(
-                                  children: [
-                                    const Text(
-                                      "Conversation",
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.w700,
-                                      ),
-                                    ),
-                                    Container(
-                                      margin: const EdgeInsets.only(top: 3),
-                                      child: const Text(
-                                        "0/5",
-                                        style: TextStyle(
-                                            fontSize: 10
-                                        ),
-                                      ),
-                                    ),
-                                    Stack(
-                                      children: [
-                                        Container(
-                                          margin: const EdgeInsets.only(top:7),
-                                          width: width * 0.3,
-                                          height: 8,
-                                          decoration: BoxDecoration(
-                                            color: const Color(0xffdddddd),
-                                            borderRadius: BorderRadius.circular(5),
-                                          ),
-                                        ),
-                                        Container(
-                                          margin: const EdgeInsets.only(top:7),
-                                          width: width * 0.1,
-                                          height: 8,
-                                          decoration: BoxDecoration(
-                                            color: const Color(0xff37B0E5),
-                                            borderRadius: BorderRadius.circular(5),
-                                          ),
-                                        ),
-                                      ],
-                                    )
-                                  ],
-                                ),
-                              )
-                            ],
-                          ),
-                        ),
-                        Container(
-                          width: width * 0.37,
-                          height: width * 0.35,
-                          decoration: BoxDecoration(
-                            color: const Color(0xfff6f6f6),
-                            boxShadow: const [
-                              BoxShadow(
-                                color: Color.fromRGBO(0, 0, 0, 0.25),
-                                blurRadius: 5.0,
-                                spreadRadius: 0.0,
-                              )
-                            ],
-                            borderRadius: BorderRadius.circular(5),
-                          ),
-                          child: Column(
-                            children: [
-                              Container(
-                                margin: const EdgeInsets.only(top: 20),
-                                width: 47,
-                                height: 47,
-                                decoration: BoxDecoration(
-                                  color: const Color(0xfff6f6f6),
-                                  boxShadow: const [
-                                    BoxShadow(
-                                      color: Color.fromRGBO(0, 0, 0, 0.25),
-                                      blurRadius: 5.0,
-                                      spreadRadius: 0.0,
-                                    )
-                                  ],
-                                  borderRadius: BorderRadius.circular(50),
-                                ),
-                                child: const Icon(
-                                  Icons.hdr_auto_sharp,
-                                  color: Color(0xff72B42C),
-                                  size: 30,
-                                ),
-                              ),
-                              Container(
-                                margin: const EdgeInsets.only(top: 10),
-                                child: Column(
-                                  children: [
-                                    const Text(
-                                      "Word",
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.w700,
-                                      ),
-                                    ),
-                                    Container(
-                                      margin: const EdgeInsets.only(top: 3),
-                                      child: const Text(
-                                        "0/5",
-                                        style: TextStyle(
-                                            fontSize: 10
-                                        ),
-                                      ),
-                                    ),
-                                    Stack(
-                                      children: [
-                                        Container(
-                                          margin: const EdgeInsets.only(top:7),
-                                          width: width * 0.3,
-                                          height: 8,
-                                          decoration: BoxDecoration(
-                                            color: const Color(0xffdddddd),
-                                            borderRadius: BorderRadius.circular(5),
-                                          ),
-                                        ),
-                                        Container(
-                                          margin: const EdgeInsets.only(top:7),
-                                          width: width * 0.1,
-                                          height: 8,
-                                          decoration: BoxDecoration(
-                                            color: const Color(0xff72B42C),
-                                            borderRadius: BorderRadius.circular(5),
-                                          ),
-                                        ),
-                                      ],
-                                    )
-                                  ],
-                                ),
-                              )
-                            ],
-                          ),
-                        ),
+                        Box(width, 2),
+                        Box(width, 3),
                       ],
                     )
                   ],
@@ -496,14 +202,108 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
     );
   }
 
-  Widget Chart() {
-    return Container(
-      transform: Matrix4.translationValues(100, -20, 0),
-      width: 80,
-      height: 80,
-      decoration: const BoxDecoration(
-        color: Color.fromRGBO(210, 213, 212, 1),
-        borderRadius: BorderRadius.all(Radius.elliptical(80, 80)),
+  Widget Box(width, int n) {
+    return InkWell(
+      onTap: () {
+        setState(() {
+          _select = List<bool>.filled(4, false, growable: true);
+          _select[n] = true;
+        });
+      },
+      child: Container(
+        width: width * 0.37,
+        height: width * 0.35,
+        decoration: BoxDecoration(
+          color: const Color(0xfff6f6f6),
+          boxShadow: const [
+            BoxShadow(
+              color: Color.fromRGBO(0, 0, 0, 0.25),
+              blurRadius: 5.0,
+              spreadRadius: 0.0,
+            )
+          ],
+          borderRadius: BorderRadius.circular(5),
+        ),
+        margin: const EdgeInsets.fromLTRB(0, 0, 0, 20),
+        child: Column(
+          children: [
+            AnimatedContainer(
+              duration: const Duration(milliseconds: 300),
+              curve: Curves.ease,
+              margin: const EdgeInsets.only(top: 15),
+              width: 52,
+              height: 52,
+              decoration: _select[n]
+                  ? BoxDecoration(
+                      boxShadow: const [
+                        BoxShadow(
+                          color: Color.fromRGBO(0, 0, 0, 0.1),
+                        ),
+                        BoxShadow(
+                          color: Color(0xfff6f6f6),
+                          spreadRadius: -2.0,
+                          blurRadius: 2.0,
+                        ),
+                      ],
+                      borderRadius: BorderRadius.circular(50),
+                    )
+                  : BoxDecoration(
+                      color: const Color(0xfff6f6f6),
+                      boxShadow: const [
+                        BoxShadow(
+                          color: Color.fromRGBO(0, 0, 0, 0.25),
+                          blurRadius: 5.0,
+                          spreadRadius: 0.0,
+                        )
+                      ],
+                      borderRadius: BorderRadius.circular(50),
+                    ),
+              child: kind[n]["icon"],
+            ),
+            Container(
+              margin: const EdgeInsets.only(top: 10),
+              child: Column(
+                children: [
+                  Text(
+                    "${kind[n]["title"]}",
+                    style: const TextStyle(
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                  Container(
+                    margin: const EdgeInsets.only(top: 3),
+                    child: const Text(
+                      "0/5",
+                      style: TextStyle(fontSize: 10),
+                    ),
+                  ),
+                  Stack(
+                    children: [
+                      Container(
+                        margin: const EdgeInsets.only(top: 7),
+                        width: width * 0.3,
+                        height: 8,
+                        decoration: BoxDecoration(
+                          color: const Color(0xffdddddd),
+                          borderRadius: BorderRadius.circular(5),
+                        ),
+                      ),
+                      Container(
+                        margin: const EdgeInsets.only(top: 7),
+                        width: width * 0.1,
+                        height: 8,
+                        decoration: BoxDecoration(
+                          color: kind[n]["color"],
+                          borderRadius: BorderRadius.circular(5),
+                        ),
+                      ),
+                    ],
+                  )
+                ],
+              ),
+            )
+          ],
+        ),
       ),
     );
   }
