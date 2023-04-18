@@ -29,7 +29,6 @@ class MyStatefulWidget extends StatefulWidget {
 }
 
 class _MyStatefulWidgetState extends State<MyStatefulWidget> {
-
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
@@ -48,9 +47,8 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
       },
     ];
 
-
     return Scaffold(
-      backgroundColor: Color(0xffFBC00A),
+      backgroundColor: const Color(0xffFBC00A),
       body: Stack(
         children: <Widget>[
           Positioned(
@@ -61,45 +59,104 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
               child: Container(
                 width: 120,
                 height: 700,
-                color: Color(0xfff6f6f6),
+                color: const Color(0xfff6f6f6),
               ),
             ),
           ),
           Positioned(
             top: 100,
             child: Column(children: [
-              Container(
+              SizedBox(
                 width: width * 0.9,
                 height: 50,
-                child: Text('Plan',
+                child: const Text('Plan',
                     style: TextStyle(
                       fontSize: 30,
                       fontWeight: FontWeight.bold,
                       color: Color(0xfff6f6f6),
                     )),
               ),
-              Container(
-                width: width * 1,
-                height: height * 0.74,
-                child: SafeArea(
-                    child: ScrollConfiguration(
-                      behavior: const ScrollBehavior().copyWith(overscroll: false),
-                      child: ListView.builder(
-                        padding: EdgeInsets.only(top: 0),
-                        itemCount: 10,
-                        itemBuilder: (BuildContext context, int index) {
-                          return ListTile(
-                              title: Container(
-                                width: width * 1,
-                                height: 100,
-                                color: Color(0xfff6f6f6),
+              SizedBox(
+                  width: width * 1,
+                  height: height * 0.74,
+                  child: ScrollConfiguration(
+                    behavior:
+                        const ScrollBehavior().copyWith(overscroll: false),
+                    child: ListView.builder(
+                      padding: const EdgeInsets.only(top: 0),
+                      itemCount: 20,
+                      itemBuilder: (BuildContext context, int index) {
+                        return ListTile(
+                            title: Container(
+                          padding: const EdgeInsets.all(20),
+                          width: width * 1,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(5),
+                            boxShadow: [
+                              BoxShadow(
+                                color:
+                                    const Color(0xffC3C625).withOpacity(0.7),
+                                blurRadius: 20,
                               )
-                          );
-                        },
-                      ),
+                            ],
+                            color: const Color(0xfff6f6f6),
+                          ),
+                          child: Column(
+                            children: [
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    'Step${20 - index}',
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.w700,
+                                    ),
+                                  ),
+                                  const Text(
+                                    '삭제',
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.w700,
+                                        color: Color(0xffE4101E)),
+                                  )
+                                ],
+                              ),
+                              Container(
+                                margin:
+                                    const EdgeInsets.fromLTRB(10, 10, 10, 5),
+                                child: Row(
+                                  children: [
+                                    Column(
+                                      children: [
+                                        Container(
+                                          width: width * 0.75,
+                                          child: const Text(
+                                            '• 수량명사, 형식명사, 합성명사 차이 공부하기',
+                                            style: TextStyle(
+                                              fontSize: 14,
+                                            ),
+                                          ),
+                                        ),
+                                        Container(
+                                          width: width * 0.75,
+                                          child: const Text(
+                                            '• 존경어와 겸양어',
+                                            style: TextStyle(
+                                              fontSize: 14,
+                                            ),
+                                          ),
+                                        )
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              )
+                            ],
+                          ),
+                        ));
+                      },
                     ),
-                )
-              ),
+                  )),
             ]),
           )
         ],
