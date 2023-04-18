@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'dart:math' as math;
 
@@ -25,15 +27,22 @@ class MyStatefulWidget extends StatefulWidget {
 }
 
 class _MyStatefulWidgetState extends State<MyStatefulWidget> {
-  var array = [
+  List<Map<String, dynamic>> problem = [
     {
       "problem": "Hello,\nwhat ____ your name?",
       "answer": ["is", "are", "am", "be"],
       "correct": "is"
     },
-    {"a": "asd"},
-    {"a": "asd"},
+    {
+      "problem": "Hello,\nwhat ____ your name?",
+      "answer": ["isa", "are", "am", "be"],
+      "correct": "is"
+    },
   ];
+
+  int _selectedIndex = 0;
+  List _select = List<bool>.filled(4, false, growable: true);
+  bool _fail = false;
 
   @override
   Widget build(BuildContext context) {
@@ -90,17 +99,18 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                const Text(
-                                  'Q1',
-                                  style: TextStyle(
+                                Text(
+                                  "Q${_selectedIndex + 1}",
+                                  style: const TextStyle(
                                       fontSize: 24,
                                       fontWeight: FontWeight.w900),
                                 ),
                                 Container(
                                   margin: const EdgeInsets.only(top: 10),
-                                  child: const Text(
-                                    'Hello,\nwhat ____ your name?',
-                                    style: TextStyle(
+                                  height: 50,
+                                  child: Text(
+                                    "${problem[_selectedIndex]["problem"]}",
+                                    style: const TextStyle(
                                       fontSize: 20,
                                       fontWeight: FontWeight.w900,
                                     ),
@@ -111,159 +121,15 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Container(
-                              margin: const EdgeInsets.only(top: 50),
-                              width: 130,
-                              height: 120,
-                              decoration: BoxDecoration(
-                                color: const Color(0xfff6f6f6),
-                                boxShadow: const [
-                                  BoxShadow(
-                                    color: Color.fromRGBO(0, 0, 0, 0.25),
-                                    blurRadius: 5.0,
-                                    spreadRadius: 0.0,
-                                  )
-                                ],
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              child: Stack(
-                                children: [
-                                  Container(
-                                    margin: const EdgeInsets.all(10),
-                                    child: const Text(
-                                      "A",
-                                      style: TextStyle(
-                                          fontSize: 20,
-                                          fontWeight: FontWeight.w900),
-                                    ),
-                                  ),
-                                  const Center(
-                                    child: Text(
-                                      "is",
-                                      style: TextStyle(
-                                          fontSize: 27,
-                                          fontWeight: FontWeight.w900),
-                                    ),
-                                  )
-                                ],
-                              ),
-                            ),
-                            Container(
-                              margin: const EdgeInsets.only(top: 50),
-                              width: 130,
-                              height: 120,
-                              decoration: BoxDecoration(
-                                color: const Color(0xfff6f6f6),
-                                boxShadow: const [
-                                  BoxShadow(
-                                    color: Color.fromRGBO(0, 0, 0, 0.25),
-                                    blurRadius: 5.0,
-                                    spreadRadius: 0.0,
-                                  )
-                                ],
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              child: Stack(
-                                children: [
-                                  Container(
-                                    margin: const EdgeInsets.all(10),
-                                    child: const Text(
-                                      "B",
-                                      style: TextStyle(
-                                          fontSize: 20,
-                                          fontWeight: FontWeight.w900),
-                                    ),
-                                  ),
-                                  const Center(
-                                    child: Text(
-                                      "are",
-                                      style: TextStyle(
-                                          fontSize: 27,
-                                          fontWeight: FontWeight.w900),
-                                    ),
-                                  )
-                                ],
-                              ),
-                            )
+                            box('A', 0),
+                            box('B', 1),
                           ],
                         ),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Container(
-                              margin: const EdgeInsets.only(top: 15),
-                              width: 130,
-                              height: 120,
-                              decoration: BoxDecoration(
-                                color: const Color(0xfff6f6f6),
-                                boxShadow: const [
-                                  BoxShadow(
-                                    color: Color.fromRGBO(0, 0, 0, 0.25),
-                                    blurRadius: 5.0,
-                                    spreadRadius: 0.0,
-                                  )
-                                ],
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              child: Stack(
-                                children: [
-                                  Container(
-                                    margin: const EdgeInsets.all(10),
-                                    child: const Text(
-                                      "C",
-                                      style: TextStyle(
-                                          fontSize: 20,
-                                          fontWeight: FontWeight.w900),
-                                    ),
-                                  ),
-                                  const Center(
-                                    child: Text(
-                                      "am",
-                                      style: TextStyle(
-                                          fontSize: 27,
-                                          fontWeight: FontWeight.w900),
-                                    ),
-                                  )
-                                ],
-                              ),
-                            ),
-                            Container(
-                              margin: const EdgeInsets.only(top: 15),
-                              width: 130,
-                              height: 120,
-                              decoration: BoxDecoration(
-                                color: const Color(0xfff6f6f6),
-                                boxShadow: const [
-                                  BoxShadow(
-                                    color: Color.fromRGBO(0, 0, 0, 0.25),
-                                    blurRadius: 5.0,
-                                    spreadRadius: 0.0,
-                                  )
-                                ],
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              child: Stack(
-                                children: [
-                                  Container(
-                                    margin: const EdgeInsets.all(10),
-                                    child: const Text(
-                                      "D",
-                                      style: TextStyle(
-                                          fontSize: 20,
-                                          fontWeight: FontWeight.w900),
-                                    ),
-                                  ),
-                                  const Center(
-                                    child: Text(
-                                      "be",
-                                      style: TextStyle(
-                                          fontSize: 27,
-                                          fontWeight: FontWeight.w900),
-                                    ),
-                                  )
-                                ],
-                              ),
-                            )
+                            box('C', 2),
+                            box('D', 3),
                           ],
                         ),
                       ],
@@ -271,21 +137,48 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
                   ),
                 ),
                 Center(
-                  child: Container(
-                    margin: const EdgeInsets.fromLTRB(0, 30, 0, 20),
-                    width: width * 0.4,
-                    height: height * 0.06,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      color: const Color(0xff98E843),
-                    ),
-                    child: const Center(
-                      child: Text(
-                        "Next",
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 20,
-                            color: Color(0xfff6f6f6)),
+                  child: InkWell(
+                    onTap: () => {
+                      setState(() {
+                        if (_select.contains(true)) {
+                          if (problem[_selectedIndex]["answer"]
+                          [_select.indexOf(true)] ==
+                              problem[_selectedIndex]["correct"]) {
+                            _selectedIndex += 1;
+                          } else {
+                            _fail = true;
+                            Timer(
+                                const Duration(seconds: 1),
+                                    () => setState(() {
+                                  _fail = false;
+                                }));
+                          }
+                          _select = List<bool>.filled(4, false, growable: true);
+                        }
+                      })
+                    },
+                    child: AnimatedContainer(
+                      margin: const EdgeInsets.fromLTRB(0, 30, 0, 20),
+                      width: width * 0.4,
+                      height: height * 0.06,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        color: _fail
+                            ? const Color(0xffE4101E)
+                            : _select.contains(true)
+                                ? const Color(0xff98E843)
+                                : const Color(0xffbbbbbb),
+                      ),
+                      duration: const Duration(milliseconds: 200),
+                      curve: Curves.ease,
+                      child: const Center(
+                        child: Text(
+                          "Next",
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 20,
+                              color: Color(0xfff6f6f6)),
+                        ),
                       ),
                     ),
                   ),
@@ -295,4 +188,66 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
       ),
     );
   }
+
+  Widget box(String q, int n) {
+    return InkWell(
+        onTap: () => {
+              setState(() {
+                _select = List<bool>.filled(4, false, growable: true);
+                _select[n] = true;
+              })
+            },
+        child: AnimatedContainer(
+          margin: const EdgeInsets.only(top: 15),
+          width: 130,
+          height: 120,
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.ease,
+          decoration: _select[n]
+              ? BoxDecoration(
+                  boxShadow: const [
+                    BoxShadow(
+                      color: Color.fromRGBO(0, 0, 0, 0.125),
+                    ),
+                    BoxShadow(
+                      color: Color(0xfff6f6f6),
+                      spreadRadius: -4.0,
+                      blurRadius: 4.0,
+                    ),
+                  ],
+                  borderRadius: BorderRadius.circular(10),
+                )
+              : BoxDecoration(
+                  color: const Color(0xfff6f6f6),
+                  boxShadow: const [
+                    BoxShadow(
+                      color: Color.fromRGBO(0, 0, 0, 0.25),
+                      blurRadius: 5.0,
+                    )
+                  ],
+                  borderRadius: BorderRadius.circular(10),
+                ),
+          child: Stack(
+            children: [
+              Container(
+                margin: const EdgeInsets.all(10),
+                child: Text(
+                  q,
+                  style: const TextStyle(
+                      fontSize: 20, fontWeight: FontWeight.w900),
+                ),
+              ),
+              Center(
+                child: Text(
+                  '${problem[_selectedIndex]["answer"][n]}',
+                  style: const TextStyle(
+                      fontSize: 27, fontWeight: FontWeight.w900),
+                ),
+              )
+            ],
+          ),
+        ));
+  }
+
+
 }
