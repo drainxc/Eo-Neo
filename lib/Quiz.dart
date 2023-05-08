@@ -36,7 +36,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
     {
       "problem": "Hello,\nwhat ____ your name?",
       "answer": ["isa", "are", "am", "be"],
-      "correct": "is"
+      "correct": "isa"
     },
   ];
 
@@ -144,7 +144,14 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
                           if (problem[_selectedIndex]["answer"]
                           [_select.indexOf(true)] ==
                               problem[_selectedIndex]["correct"]) {
-                            _selectedIndex += 1;
+                            try {
+                              problem[_selectedIndex + 1];
+                              _selectedIndex += 1;
+
+                            }
+                            catch(e) {
+                              print('문제 수 초과');
+                            }
                           } else {
                             _fail = true;
                             Timer(
@@ -195,6 +202,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
               setState(() {
                 _select = List<bool>.filled(4, false, growable: true);
                 _select[n] = true;
+                print(_select);
               })
             },
         child: AnimatedContainer(
