@@ -84,16 +84,16 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
                                 width: width * 0.8,
                                 height: 70,
                                 child: Row(
-                                  children: [
-                                    Container(
+                                  children: const [
+                                    SizedBox(
                                       width: 52,
                                       height: 52,
-                                      child: const Icon(
+                                      child: Icon(
                                         Icons.person,
                                         size: 30,
                                       ),
                                     ),
-                                    const Text('Lee Dong Hyeon'),
+                                    Text('Lee Dong Hyeon'),
                                   ],
                                 ),
                               ),
@@ -102,16 +102,16 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
                                 width: width * 0.8,
                                 height: 70,
                                 child: Row(
-                                  children: [
-                                    Container(
+                                  children: const [
+                                    SizedBox(
                                       width: 52,
                                       height: 52,
-                                      child: const Icon(
+                                      child: Icon(
                                         Icons.person_off,
                                         size: 30,
                                       ),
                                     ),
-                                    const Text('Delete Account'),
+                                    Text('Delete Account'),
                                   ],
                                 ),
                               ),
@@ -120,16 +120,16 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
                                 width: width * 0.8,
                                 height: 70,
                                 child: Row(
-                                  children: [
-                                    Container(
+                                  children: const [
+                                    SizedBox(
                                       width: 52,
                                       height: 52,
-                                      child: const Icon(
+                                      child: Icon(
                                         Icons.delete,
                                         size: 30,
                                       ),
                                     ),
-                                    const Text('Lee Dong Hyeon'),
+                                    Text('Lee Dong Hyeon'),
                                   ],
                                 ),
                               ),
@@ -138,16 +138,16 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
                                 width: width * 0.8,
                                 height: 70,
                                 child: Row(
-                                  children: [
-                                    Container(
+                                  children: const [
+                                    SizedBox(
                                       width: 52,
                                       height: 52,
-                                      child: const Icon(
+                                      child: Icon(
                                         Icons.logout,
                                         size: 30,
                                       ),
                                     ),
-                                    const Text('Lee Dong Hyeon'),
+                                    Text('Lee Dong Hyeon'),
                                   ],
                                 ),
                               ),
@@ -158,6 +158,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
                     ),
                   ),
                   Container(
+                    // ignore: prefer_const_constructors
                     margin: EdgeInsets.only(top: 30),
                     width: width,
                     child: Column(
@@ -195,16 +196,16 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
                                 width: width * 0.8,
                                 height: 70,
                                 child: Row(
-                                  children: [
-                                    Container(
+                                  children: const [
+                                    SizedBox(
                                       width: 52,
                                       height: 52,
-                                      child: const Icon(
+                                      child: Icon(
                                         Icons.code,
                                         size: 30,
                                       ),
                                     ),
-                                    const Text('https://github.com/eastcopper/jang'),
+                                    Text('https://github.com/eastcopper/jang'),
                                   ],
                                 ),
                               ),
@@ -239,11 +240,12 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
     );
   }
 
+  // ignore: non_constant_identifier_names
   Widget DividerHr(width) {
     return Container(
       height: 2,
       width: width * 0.8,
-      color: Color(0xff72B42C),
+      color: const Color(0xff72B42C),
     );
   }
 }

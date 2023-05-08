@@ -202,6 +202,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
     );
   }
 
+  // ignore: non_constant_identifier_names
   Widget Box(width, int n) {
     return InkWell(
       onTap: () {
