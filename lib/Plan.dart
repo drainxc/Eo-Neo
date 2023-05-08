@@ -38,12 +38,10 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
       {
         "id": 0,
         "plan": ["asdasd", 'sdfsdf', 'dfgdfg'],
-        "success": [false, false, false],
       },
       {
         "id": 1,
         "plan": ["asdasd", 'sdfsdf', 'dfgdfg'],
-        "success": [false, false, false],
       },
     ];
 
@@ -84,7 +82,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
                         const ScrollBehavior().copyWith(overscroll: false),
                     child: ListView.builder(
                       padding: const EdgeInsets.only(top: 0),
-                      itemCount: 20,
+                      itemCount: planArr.length,
                       itemBuilder: (BuildContext context, int index) {
                         return ListTile(
                             title: Container(
@@ -92,13 +90,6 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
                           width: width * 1,
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(5),
-                            boxShadow: [
-                              BoxShadow(
-                                color:
-                                    const Color(0xffC3C625).withOpacity(0.7),
-                                blurRadius: 20,
-                              )
-                            ],
                             color: const Color(0xfff6f6f6),
                           ),
                           child: Column(
@@ -108,7 +99,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
                                     MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text(
-                                    'Step${20 - index}',
+                                    'Step${planArr.length - index}',
                                     style: const TextStyle(
                                       fontWeight: FontWeight.w700,
                                     ),
@@ -127,26 +118,12 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
                                 child: Row(
                                   children: [
                                     Column(
-                                      children: [
-                                        Container(
-                                          width: width * 0.75,
-                                          child: const Text(
-                                            '• 수량명사, 형식명사, 합성명사 차이 공부하기',
-                                            style: TextStyle(
-                                              fontSize: 14,
-                                            ),
-                                          ),
-                                        ),
-                                        Container(
-                                          width: width * 0.75,
-                                          child: const Text(
-                                            '• 존경어와 겸양어',
-                                            style: TextStyle(
-                                              fontSize: 14,
-                                            ),
-                                          ),
-                                        )
-                                      ],
+                                      children: List.generate(
+                                        planArr[index]["plan"].length,
+                                        (i) {
+                                          return Text('${planArr[index]["plan"][i]}');
+                                        },
+                                      ),
                                     ),
                                   ],
                                 ),
