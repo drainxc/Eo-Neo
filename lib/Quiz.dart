@@ -1,7 +1,12 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:http/http.dart' as http;
 import 'dart:math' as math;
+
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() => runApp(const Quiz());
 
@@ -12,10 +17,7 @@ class Quiz extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      title: _title,
-      home: MyStatefulWidget(),
-    );
+    return const MaterialApp(title: _title, home: MyStatefulWidget());
   }
 }
 
@@ -26,23 +28,50 @@ class MyStatefulWidget extends StatefulWidget {
   State<MyStatefulWidget> createState() => _MyStatefulWidgetState();
 }
 
+_getQuiz() async {
+  final url = Uri.parse('http://10.0.2.2:8080/quiz/WORD');
+  final response = await http.get(url);
+
+  if (response.statusCode == 200) {
+    final List<dynamic> jsonList = json.decode(response.body);
+
+    final List<Map<String, dynamic>> problemList = jsonList.map((json) {
+      return <String, dynamic>{
+        'problem': json['problem'],
+        'answer': List<String>.from(json['answer']),
+        'correct': json['correct']
+      };
+    }).toList();
+
+    return problemList;
+  } else {
+    throw Exception('Failed to load quiz');
+  }
+}
+
+_getData() async {
+  print('asd');
+  final SharedPreferences pref = await SharedPreferences.getInstance();
+  print(await pref.getString("accessToken"));
+}
+
 class _MyStatefulWidgetState extends State<MyStatefulWidget> {
-  List<Map<String, dynamic>> problem = [
-    {
-      "problem": "Hello,\nwhat ____ your name?",
-      "answer": ["is", "are", "am", "be"],
-      "correct": "is"
-    },
-    {
-      "problem": "Hello,\nwhat ____ your name?",
-      "answer": ["isa", "are", "am", "be"],
-      "correct": "isa"
-    },
-  ];
+  List<Map<String, dynamic>> problem = [];
 
   int _selectedIndex = 0;
   List _select = List<bool>.filled(4, false, growable: true);
   bool _fail = false;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _getQuiz().then((value) {
+      setState(() {
+        problem = value;
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -85,55 +114,54 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
                   child: Container(
                     padding: const EdgeInsets.all(20),
                     child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Text(
-                          '문법',
-                          style: TextStyle(
-                              fontSize: 19,
-                              fontWeight: FontWeight.w900,
-                              color: Color(0xff888888)),
-                        ),
-                        Container(
-                            margin: const EdgeInsets.fromLTRB(10, 20, 0, 0),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  "Q${_selectedIndex + 1}",
-                                  style: const TextStyle(
-                                      fontSize: 24,
-                                      fontWeight: FontWeight.w900),
-                                ),
-                                Container(
-                                  margin: const EdgeInsets.only(top: 10),
-                                  height: 50,
-                                  child: Text(
-                                    "${problem[_selectedIndex]["problem"]}",
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text(
+                            '문법',
+                            style: TextStyle(
+                                fontSize: 19,
+                                fontWeight: FontWeight.w900,
+                                color: Color(0xff888888)),
+                          ),
+                          Container(
+                              margin: const EdgeInsets.fromLTRB(10, 20, 0, 0),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    "Q${_selectedIndex + 1}",
                                     style: const TextStyle(
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.w900,
-                                    ),
+                                        fontSize: 24,
+                                        fontWeight: FontWeight.w900),
                                   ),
-                                )
-                              ],
-                            )),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            box('A', 0),
-                            box('B', 1),
-                          ],
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            box('C', 2),
-                            box('D', 3),
-                          ],
-                        ),
-                      ],
-                    ),
+                                  Container(
+                                    margin: const EdgeInsets.only(top: 10),
+                                    height: 50,
+                                    child: Text(
+                                      "${problem.isNotEmpty ? problem[_selectedIndex]["problem"] : ""}",
+                                      style: const TextStyle(
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.w900,
+                                      ),
+                                    ),
+                                  )
+                                ],
+                              )),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              box('A', 0),
+                              box('B', 1),
+                            ],
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              box('C', 2),
+                              box('D', 3),
+                            ],
+                          ),
+                        ]),
                   ),
                 ),
                 Center(
@@ -142,23 +170,21 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
                       setState(() {
                         if (_select.contains(true)) {
                           if (problem[_selectedIndex]["answer"]
-                          [_select.indexOf(true)] ==
+                                  [_select.indexOf(true)] ==
                               problem[_selectedIndex]["correct"]) {
                             try {
                               problem[_selectedIndex + 1];
                               _selectedIndex += 1;
-
-                            }
-                            catch(e) {
+                            } catch (e) {
                               print('문제 수 초과');
                             }
                           } else {
                             _fail = true;
                             Timer(
                                 const Duration(seconds: 1),
-                                    () => setState(() {
-                                  _fail = false;
-                                }));
+                                () => setState(() {
+                                      _fail = false;
+                                    }));
                           }
                           _select = List<bool>.filled(4, false, growable: true);
                         }
@@ -202,7 +228,6 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
               setState(() {
                 _select = List<bool>.filled(4, false, growable: true);
                 _select[n] = true;
-                print(_select);
               })
             },
         child: AnimatedContainer(
@@ -247,7 +272,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
               ),
               Center(
                 child: Text(
-                  '${problem[_selectedIndex]["answer"][n]}',
+                  '${problem.isNotEmpty ? problem[_selectedIndex]["answer"][n] : ""}',
                   style: const TextStyle(
                       fontSize: 27, fontWeight: FontWeight.w900),
                 ),
@@ -256,6 +281,4 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
           ),
         ));
   }
-
-
 }
