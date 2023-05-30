@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'dart:math' as math;
+import 'package:provider/provider.dart';
 
 void main() => runApp(const Home());
 
@@ -154,26 +156,29 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
                                     ),
                                   ),
                                 ),
-                                Container(
-                                    transform: Matrix4.translationValues(
-                                        -width * 0.15, -30, 0),
-                                    width: width * 0.3,
-                                    height: 28,
-                                    margin: const EdgeInsets.only(top: 80),
-                                    decoration: const BoxDecoration(
-                                      color: Color(0xffe4101e),
-                                      borderRadius: BorderRadius.all(
-                                          Radius.elliptical(5, 5)),
-                                    ),
-                                    child: const Center(
-                                      child: Text(
-                                        'Go! Start!',
-                                        style: TextStyle(
-                                            fontSize: 12,
-                                            fontWeight: FontWeight.w700,
-                                            color: Color(0xfff6f6f6)),
+                                InkWell(
+                                  onTap: () => {setState: (() {})},
+                                  child: Container(
+                                      transform: Matrix4.translationValues(
+                                          -width * 0.15, -30, 0),
+                                      width: width * 0.3,
+                                      height: 28,
+                                      margin: const EdgeInsets.only(top: 80),
+                                      decoration: const BoxDecoration(
+                                        color: Color(0xffe4101e),
+                                        borderRadius: BorderRadius.all(
+                                            Radius.elliptical(5, 5)),
                                       ),
-                                    )),
+                                      child: const Center(
+                                        child: Text(
+                                          'Go! Start!',
+                                          style: TextStyle(
+                                              fontSize: 12,
+                                              fontWeight: FontWeight.w700,
+                                              color: Color(0xfff6f6f6)),
+                                        ),
+                                      )),
+                                ),
                               ],
                             )
                           ],
