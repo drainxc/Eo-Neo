@@ -33,11 +33,10 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
-    final List<String> entries = <String>['A', 'B', 'C'];
     final List planArr = [
       {
         "id": 0,
-        "plan": ["asdasd", 'sdfsdf', 'dfgdfg'],
+        "plan": ["asdasd1", 'sdfsdf1'],
       },
       {
         "id": 1,
