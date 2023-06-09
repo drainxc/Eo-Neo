@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:untitled1/page/Auth/Login/login.dart';
+import 'package:provider/provider.dart';
+import 'package:untitled1/provider/select.dart';
+import 'package:untitled1/screen/Auth/Login/login.dart';
 
 void main() {
   runApp(
@@ -11,8 +13,12 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: Login(),
+    return MaterialApp(
+      title: 'Eo_Neo',
+      home: ChangeNotifierProvider(
+        create: (_) => SelectProvider(),
+        child: const Login(),
+      ),
     );
   }
 }
