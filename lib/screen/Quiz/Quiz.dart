@@ -20,11 +20,23 @@ class Quiz extends StatefulWidget {
 class _QuizState extends State<Quiz> {
   List<Map<String, dynamic>> problem = [];
 
-  int _selectedIndex = 0;
+  Map<String, dynamic> _selectedIndex = {
+    "correctBasic": 0,
+    "correctLanguage": 0,
+    "correctConversation": 0,
+    "correctWord": 0
+  };
   List _select = List<bool>.filled(4, false, growable: true);
   bool _fail = false;
+  List kindList = ["BASIC", "LANGUAGE", "CONVERSATION", "WORD"];
+  final correctKindList = [
+    "correctBasic",
+    "correctLanguage",
+    "correctConversation",
+    "correctWord"
+  ];
 
-  _getUser(kind) async {
+  _getUser() async {
     final url = Uri.parse('http://10.0.2.2:8080/user');
     final SharedPreferences pref = await SharedPreferences.getInstance();
     final response = await http.get(url, headers: {
@@ -32,14 +44,7 @@ class _QuizState extends State<Quiz> {
           'Bearer ${pref.getString("accessToken")}',
     });
 
-    final correctKindList = [
-      "correctBasic",
-      "correctLanguage",
-      "correctConversation",
-      "correctWord"
-    ];
-
-    return json.decode(response.body)[correctKindList[kind]] as int;
+    return json.decode(response.body);
   }
 
   _getQuiz(kind) async {
@@ -65,14 +70,13 @@ class _QuizState extends State<Quiz> {
   }
 
   _putCorrect(kind) async {
-    final _categoryList = [
-      "BASIC","LANGUEGE","CONVERSATION","WORD"
-    ];
+    final _categoryList = ["BASIC", "LANGUAGE", "CONVERSATION", "WORD"];
     final SharedPreferences pref = await SharedPreferences.getInstance();
     final url = Uri.parse("http://10.0.2.2:8080/quiz/${_categoryList[kind]}");
+    print("http://10.0.2.2:8080/quiz/${_categoryList[kind]}");
     await http.put(url, headers: {
       HttpHeaders.authorizationHeader:
-      'Bearer ${pref.getString("accessToken")}',
+          'Bearer ${pref.getString("accessToken")}',
     });
   }
 
@@ -81,9 +85,10 @@ class _QuizState extends State<Quiz> {
     // TODO: implement initState
     super.initState();
     setState(() {
-      _getUser(0).then((res) {
+      _getUser().then((res) {
         setState(() {
           _selectedIndex = res;
+          print(res);
         });
       });
     });
@@ -94,7 +99,6 @@ class _QuizState extends State<Quiz> {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
     int kind = Provider.of<SelectProvider>(context).select.indexOf(true);
-    List kindList = ["BASIC", "LANGUAGE", "CONVERSATION", "WORD"];
 
     _getQuiz(kindList[kind]).then((value) {
       setState(() {
@@ -153,7 +157,7 @@ class _QuizState extends State<Quiz> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    "Q${_selectedIndex + 1}",
+                                    "Q${_selectedIndex[correctKindList[kind]] + 1}",
                                     style: const TextStyle(
                                         fontSize: 24,
                                         fontWeight: FontWeight.w900),
@@ -162,7 +166,7 @@ class _QuizState extends State<Quiz> {
                                     margin: const EdgeInsets.only(top: 10),
                                     height: 50,
                                     child: Text(
-                                      "${problem.isNotEmpty ? problem[_selectedIndex]["problem"] : ""}",
+                                      "${problem.isNotEmpty ? problem[_selectedIndex[correctKindList[kind]]]["problem"] : ""}",
                                       style: const TextStyle(
                                         fontSize: 20,
                                         fontWeight: FontWeight.w900,
@@ -174,15 +178,15 @@ class _QuizState extends State<Quiz> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              box('A', 0),
-                              box('B', 1),
+                              box('A', 0, kind),
+                              box('B', 1, kind),
                             ],
                           ),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              box('C', 2),
-                              box('D', 3),
+                              box('C', 2, kind),
+                              box('D', 3, kind),
                             ],
                           ),
                         ]),
@@ -193,12 +197,14 @@ class _QuizState extends State<Quiz> {
                     onTap: () => {
                       setState(() {
                         if (_select.contains(true)) {
-                          if (problem[_selectedIndex]["answer"]
-                                  [_select.indexOf(true)] ==
-                              problem[_selectedIndex]["correct"]) {
+                          if (problem[_selectedIndex[correctKindList[kind]]]
+                                  ["answer"][_select.indexOf(true)] ==
+                              problem[_selectedIndex[correctKindList[kind]]]
+                                  ["correct"]) {
                             try {
-                              problem[_selectedIndex + 1];
-                              _selectedIndex += 1;
+                              problem[
+                                  _selectedIndex[correctKindList[kind]] + 1];
+                              _selectedIndex[correctKindList[kind]] += 1;
                               _putCorrect(kind);
                             } catch (e) {
                               print('문제 수 초과');
@@ -247,7 +253,7 @@ class _QuizState extends State<Quiz> {
     );
   }
 
-  Widget box(String q, int n) {
+  Widget box(String q, int n, kind) {
     return InkWell(
         onTap: () => {
               setState(() {
@@ -299,10 +305,13 @@ class _QuizState extends State<Quiz> {
                 padding: EdgeInsets.fromLTRB(20, 28, 20, 12),
                 child: Center(
                   child: Text(
-                    '${problem.isNotEmpty ? problem[_selectedIndex]["answer"][n] : ""}',
+                    '${problem.isNotEmpty ? problem[_selectedIndex[correctKindList[kind]]]["answer"][n] : ""}',
                     style: TextStyle(
                         fontSize: problem.isNotEmpty
-                            ? problem[_selectedIndex]["answer"][n].length >= 15
+                            ? problem[_selectedIndex[correctKindList[kind]]]
+                                            ["answer"][n]
+                                        .length >=
+                                    15
                                 ? 15
                                 : 25
                             : 0,
