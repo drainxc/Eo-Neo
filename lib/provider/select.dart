@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class CountProvider extends ChangeNotifier {
-  List<bool> _select = [false,false,false,false];
+class SelectProvider extends ChangeNotifier {
+  List<bool> _select = [true,false,false,false];
 
   List<bool> get select => _select;
 
