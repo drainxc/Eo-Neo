@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:untitled1/page/Auth/Login/login.dart';
+import 'package:untitled1/screen/Auth/Login/login.dart';
 
 void main() => runApp(const Signup());
 
