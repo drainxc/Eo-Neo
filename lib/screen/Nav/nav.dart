@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:untitled1/page/Home/Home.dart';
-import 'package:untitled1/page/Plan/Plan.dart';
-import 'package:untitled1/page/Quiz/Quiz.dart';
-import 'package:untitled1/page/Setting/Setting.dart';
+import 'package:untitled1/screen/Home/Home.dart';
+import 'package:untitled1/screen/Plan/Plan.dart';
+import 'package:untitled1/screen/Quiz/Quiz.dart';
+import 'package:untitled1/screen/Setting/Setting.dart';
 
 void main() => runApp(const HomeScreen());
 
