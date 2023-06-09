@@ -1,5 +1,11 @@
+import 'dart:convert';
+import 'dart:io';
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:untitled1/provider/select.dart';
+import 'package:http/http.dart' as http;
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -9,49 +15,67 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  List _select = [true, false, false, false];
+  late SelectProvider _selectProvider;
+  Map<String, dynamic> _userInfo = {
+    "correctBasic":0,
+    "correctLanguage":0,
+    "correctConversation":0,
+    "correctWord":0,
+  };
+  final List<String> _categoryList = [
+    "correctBasic",
+    "correctLanguage",
+    "correctConversation",
+    "correctWord"
+  ];
   List<Map<String, dynamic>> kind = [
     {
-      "icon": const Icon(
-        Icons.feed,
-        color: Color(0xffFBC00A),
-        size: 30,
-      ),
+      "icon": Icons.feed,
       "title": "Basic",
       "color": const Color(0xffFBC00A),
     },
     {
-      "icon": const Icon(
-        Icons.language,
-        color: Color(0xffE4101E),
-        size: 30,
-      ),
+      "icon": Icons.language,
       "title": "Language",
       "color": const Color(0xffE4101E),
     },
     {
-      "icon": const Icon(
-        Icons.message,
-        color: Color(0xff37B0E5),
-        size: 30,
-      ),
+      "icon": Icons.message,
       "title": "Conversation",
       "color": const Color(0xff37B0E5),
     },
     {
-      "icon": const Icon(
-        Icons.hdr_auto_sharp,
-        color: Color(0xff72B42C),
-        size: 30,
-      ),
+      "icon": Icons.hdr_auto_sharp,
       "title": "Word",
       "color": const Color(0xff72B42C),
     }
   ];
 
+  _getUser() async {
+    final SharedPreferences pref = await SharedPreferences.getInstance();
+    final url = Uri.parse('http://10.0.2.2:8080/user');
+    final response = await http.get(url, headers: {
+      HttpHeaders.authorizationHeader:
+      'Bearer ${pref.getString("accessToken")}',
+    });
+    return json.decode(response.body);
+  }
+
+
   @override
   Widget build(BuildContext context) {
-    double width = MediaQuery.of(context).size.width;
+    _selectProvider = Provider.of<SelectProvider>(context, listen: false);
+    double width = MediaQuery
+        .of(context)
+        .size
+        .width;
+
+    _getUser().then((res) {
+      setState(() {
+        _userInfo = res;
+      });
+    });
+
     return Scaffold(
       backgroundColor: const Color(0xffE4101E),
       body: Stack(
@@ -131,36 +155,13 @@ class _HomeState extends State<Home> {
                                   width: width * 0.6,
                                   margin: const EdgeInsets.only(top: 10),
                                   child: const Text(
-                                    "5일 연속으로 공부하셨습니다.\n오늘 하루도 언어 공부 화이팅!",
+                                    "오늘 하루도 힘내세요!\n개발자는 당신을 응원합니다!",
                                     style: TextStyle(
                                       fontSize: 10,
                                       fontWeight: FontWeight.w700,
                                     ),
                                   ),
-                                ),
-                                InkWell(
-                                  onTap: () => {setState: (() {})},
-                                  child: Container(
-                                      transform: Matrix4.translationValues(
-                                          -width * 0.15, -30, 0),
-                                      width: width * 0.3,
-                                      height: 28,
-                                      margin: const EdgeInsets.only(top: 80),
-                                      decoration: const BoxDecoration(
-                                        color: Color(0xffe4101e),
-                                        borderRadius: BorderRadius.all(
-                                            Radius.elliptical(5, 5)),
-                                      ),
-                                      child: const Center(
-                                        child: Text(
-                                          'Go! Start!',
-                                          style: TextStyle(
-                                              fontSize: 12,
-                                              fontWeight: FontWeight.w700,
-                                              color: Color(0xfff6f6f6)),
-                                        ),
-                                      )),
-                                ),
+                                )
                               ],
                             )
                           ],
@@ -193,10 +194,7 @@ class _HomeState extends State<Home> {
   Widget Box(width, int n) {
     return InkWell(
       onTap: () {
-        setState(() {
-          _select = List<bool>.filled(4, false, growable: true);
-          _select[n] = true;
-        });
+        _selectProvider.changeState(n);
       },
       child: Container(
         width: width * 0.37,
@@ -221,32 +219,30 @@ class _HomeState extends State<Home> {
               margin: const EdgeInsets.only(top: 15),
               width: 52,
               height: 52,
-              decoration: _select[n]
-                  ? BoxDecoration(
-                      boxShadow: const [
-                        BoxShadow(
-                          color: Color.fromRGBO(0, 0, 0, 0.1),
-                        ),
-                        BoxShadow(
-                          color: Color(0xfff6f6f6),
-                          spreadRadius: -2.0,
-                          blurRadius: 2.0,
-                        ),
-                      ],
-                      borderRadius: BorderRadius.circular(50),
-                    )
-                  : BoxDecoration(
-                      color: const Color(0xfff6f6f6),
-                      boxShadow: const [
-                        BoxShadow(
-                          color: Color.fromRGBO(0, 0, 0, 0.25),
-                          blurRadius: 5.0,
-                          spreadRadius: 0.0,
-                        )
-                      ],
-                      borderRadius: BorderRadius.circular(50),
-                    ),
-              child: kind[n]["icon"],
+              decoration: BoxDecoration(
+                color: Provider
+                    .of<SelectProvider>(context)
+                    .select[n]
+                    ? kind[n]["color"]
+                    : const Color(0xfff6f6f6),
+                boxShadow: const [
+                  BoxShadow(
+                    color: Color.fromRGBO(0, 0, 0, 0.25),
+                    blurRadius: 5.0,
+                    spreadRadius: 0.0,
+                  )
+                ],
+                borderRadius: BorderRadius.circular(50),
+              ),
+              child: Icon(
+                kind[n]["icon"],
+                color: Provider
+                    .of<SelectProvider>(context)
+                    .select[n]
+                    ? const Color(0xfff6f6f6)
+                    : kind[n]["color"],
+                size: 30,
+              ),
             ),
             Container(
               margin: const EdgeInsets.only(top: 10),
@@ -260,9 +256,9 @@ class _HomeState extends State<Home> {
                   ),
                   Container(
                     margin: const EdgeInsets.only(top: 3),
-                    child: const Text(
-                      "0/5",
-                      style: TextStyle(fontSize: 10),
+                    child: Text(
+                      "${_userInfo[_categoryList[n]]}/5",
+                      style: const TextStyle(fontSize: 10),
                     ),
                   ),
                   Stack(
@@ -278,7 +274,7 @@ class _HomeState extends State<Home> {
                       ),
                       Container(
                         margin: const EdgeInsets.only(top: 7),
-                        width: width * 0.1,
+                        width: width * _userInfo[_categoryList[n]] * 0.06,
                         height: 8,
                         decoration: BoxDecoration(
                           color: kind[n]["color"],
