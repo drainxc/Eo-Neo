@@ -1,15 +1,18 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:untitled1/login.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 
-void main() => runApp(const Signup());
+import '../../Nav/nav.dart';
+import '../Signup/signup.dart';
 
-class Signup extends StatelessWidget {
-  const Signup({Key? key}) : super(key: key);
+void main() => runApp(const Login());
 
-  static const String _title = "Signup";
+class Login extends StatelessWidget {
+  const Login({Key? key}) : super(key: key);
+
+  static const String _title = "Login";
 
   @override
   Widget build(BuildContext context) {
@@ -27,17 +30,23 @@ class MyStatefulWidget extends StatefulWidget {
   State<MyStatefulWidget> createState() => _MyStatefulWidgetState();
 }
 
-_PostSignup(request) async {
-  return await http.post(Uri.parse('http://10.0.2.2:8080/auth/signup'),
-      headers: {"Content-Type": "application/json"}, body: jsonEncode(request));
-}
-
 class _MyStatefulWidgetState extends State<MyStatefulWidget> {
-  Map<String, TextEditingController> controllers = {
+  Map<String, TextEditingController> loginRequest = {
     "accountId": TextEditingController(),
-    "nickName": TextEditingController(),
     "password": TextEditingController()
   };
+
+
+  _PostLogin(request) async {
+    final res = await http.post(Uri.parse('http://10.0.2.2:8080/auth/login'),
+        headers: {"Content-Type": "application/json"},
+        body: jsonEncode(request));
+
+    final SharedPreferences pref = await SharedPreferences.getInstance();
+
+    pref.setString("accessToken", jsonDecode(res.body)["accessToken"]);
+    pref.setString("refreshToken", jsonDecode(res.body)["refreshToken"]);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -85,20 +94,16 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
                     ],
                   ),
                   Container(
-                      margin: const EdgeInsets.fromLTRB(0, 50, 0, 35),
-                      height: height * 0.25,
+                      margin: const EdgeInsets.fromLTRB(0, 50, 0, 50),
+                      height: height * 0.2,
                       width: width * 0.8,
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
-                          InputBox(
-                              "Nickname",
-                              const Icon(Icons.drive_file_rename_outline),
-                              controllers["nickName"]),
-                          InputBox("AccountID", const Icon(Icons.person),
-                              controllers["accountId"]),
+                          InputBox("Login", const Icon(Icons.person),
+                              loginRequest["accountId"]),
                           InputBox("Password", const Icon(Icons.lock),
-                              controllers["password"]),
+                              loginRequest["password"]),
                         ],
                       )),
                   Hero(
@@ -107,25 +112,21 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
                       child: InkWell(
                         onTap: () => {
                           if (!([
-                            controllers['accountId']?.text,
-                            controllers['password']?.text,
-                            controllers['nickName']?.text
-                          ].contains('')))
+                            loginRequest["accountId"]?.text,
+                            loginRequest["password"]?.text
+                          ].contains("")))
                             {
-                              _PostSignup({
-                                "accountId": controllers['accountId']?.text,
-                                'nickName': controllers['password']?.text,
-                                'password': controllers['nickName']?.text
+                              _PostLogin({
+                                "accountId": loginRequest["accountId"]?.text,
+                                "password": loginRequest["password"]?.text
                               }).then((res) => {
                                     Navigator.push(
                                         context,
                                         MaterialPageRoute(
-                                            builder: (context) => Login()))
+                                            builder: (context) =>
+                                                const HomeScreen()))
                                   })
                             }
-                          else
-                            {print('내용을 모두 입력해주세요!ㅁ')}
-                          // print(controllers['accountId']?.text)
                         },
                         child: Container(
                           width: width * 0.55,
@@ -135,7 +136,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
                               color: const Color(0xff98E843)),
                           child: const Center(
                               child: Text(
-                            'Signup',
+                            'Login',
                             style: TextStyle(
                                 fontSize: 22,
                                 fontWeight: FontWeight.w700,
@@ -146,9 +147,11 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
                     ),
                   ),
                   InkWell(
-                    onTap: () => {
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (context) => Login()))
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const Signup()));
                     },
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -156,7 +159,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
                         Container(
                           margin: const EdgeInsets.only(top: 15),
                           child: const Text(
-                            "to Login Page",
+                            "Create Account",
                             style: TextStyle(fontWeight: FontWeight.w500),
                           ),
                         )

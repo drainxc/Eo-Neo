@@ -1,32 +1,14 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'dart:math' as math;
-import 'package:provider/provider.dart';
+import 'package:flutter/material.dart';
 
-void main() => runApp(const Home());
-
-class Home extends StatelessWidget {
-  const Home({Key? key}) : super(key: key);
-
-  static const String _title = 'Flutter Code Sample';
+class Home extends StatefulWidget {
+  const Home({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return const MaterialApp(
-      title: _title,
-      home: MyStatefulWidget(),
-    );
-  }
+  State<Home> createState() => _HomeState();
 }
 
-class MyStatefulWidget extends StatefulWidget {
-  const MyStatefulWidget({Key? key}) : super(key: key);
-
-  @override
-  State<MyStatefulWidget> createState() => _MyStatefulWidgetState();
-}
-
-class _MyStatefulWidgetState extends State<MyStatefulWidget> {
+class _HomeState extends State<Home> {
   List _select = [true, false, false, false];
   List<Map<String, dynamic>> kind = [
     {

@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:untitled1/Home.dart';
-import 'package:untitled1/Plan.dart';
-import 'package:untitled1/Quiz.dart';
-import 'package:untitled1/Setting.dart';
+import 'package:untitled1/page/Home/Home.dart';
+import 'package:untitled1/page/Plan/Plan.dart';
+import 'package:untitled1/page/Quiz/Quiz.dart';
+import 'package:untitled1/page/Setting/Setting.dart';
+
 void main() => runApp(const HomeScreen());
 
 class HomeScreen extends StatelessWidget {
@@ -28,9 +29,7 @@ class MyStatefulWidget extends StatefulWidget {
 
 class _MyStatefulWidgetState extends State<MyStatefulWidget> {
   int _selectedIndex = 0;
-  static const TextStyle optionStyle =
-  TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
-  static const List<Widget> _widgetOptions = <Widget>[
+  final List<Widget> _widgetOptions = <Widget>[
     Home(),
     Quiz(),
     Plan(),
@@ -46,45 +45,43 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: _widgetOptions.elementAt(_selectedIndex),
-      ),
-      bottomNavigationBar:
-      Container(
+        body: Center(
+          child: _widgetOptions.elementAt(_selectedIndex),
+        ),
+        bottomNavigationBar: Container(
           decoration: const BoxDecoration(
             border: Border(
-              top: BorderSide(width: 1.5,color: Color(0xfff6f6f6)),
+              top: BorderSide(width: 1.5, color: Color(0xfff6f6f6)),
             ),
           ),
           child: BottomNavigationBar(
-          items: const <BottomNavigationBarItem>[
-            BottomNavigationBarItem(
-              icon: Icon(Icons.home),
-              label: 'Home',
-              backgroundColor: Color.fromRGBO(228, 16, 30, 1),
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.school),
-              label: 'Study',
-              backgroundColor: Color.fromRGBO(55, 176, 229, 1),
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.edit_note),
-              label: 'Plan',
-              backgroundColor: Color.fromRGBO(251, 192, 10, 1),
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.settings),
-              label: 'Settings',
-              backgroundColor: Color.fromRGBO(114, 180, 44, 1),
-            ),
-          ],
-          currentIndex: _selectedIndex,
-          onTap: _onItemTapped,
-          // selectedItemColor: Colors.amber[800],
-        ),
-      )
-    );
+            items: const <BottomNavigationBarItem>[
+              BottomNavigationBarItem(
+                icon: Icon(Icons.home),
+                label: 'Home',
+                backgroundColor: Color.fromRGBO(228, 16, 30, 1),
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.school),
+                label: 'Study',
+                backgroundColor: Color.fromRGBO(55, 176, 229, 1),
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.edit_note),
+                label: 'Plan',
+                backgroundColor: Color.fromRGBO(251, 192, 10, 1),
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.settings),
+                label: 'Settings',
+                backgroundColor: Color.fromRGBO(114, 180, 44, 1),
+              ),
+            ],
+            currentIndex: _selectedIndex,
+            onTap: _onItemTapped,
+            // selectedItemColor: Colors.amber[800],
+          ),
+        ));
   }
 }
 

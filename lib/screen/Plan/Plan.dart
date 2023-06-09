@@ -1,9 +1,5 @@
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
 import 'dart:math' as math;
-
-import 'package:untitled1/Home.dart';
 
 void main() => runApp(const Plan());
 
@@ -120,7 +116,8 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
                                       children: List.generate(
                                         planArr[index]["plan"].length,
                                         (i) {
-                                          return Text('${planArr[index]["plan"][i]}');
+                                          return Text(
+                                              '${planArr[index]["plan"][i]}');
                                         },
                                       ),
                                     ),

@@ -1,74 +1,90 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import 'dart:math' as math;
 
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:untitled1/provider/select.dart';
+import 'package:provider/provider.dart';
 
-void main() => runApp(const Quiz());
-
-class Quiz extends StatelessWidget {
-  const Quiz({Key? key}) : super(key: key);
-
-  static const String _title = 'Flutter Code Sample';
+class Quiz extends StatefulWidget {
+  const Quiz({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return const MaterialApp(title: _title, home: MyStatefulWidget());
-  }
+  State<Quiz> createState() => _QuizState();
 }
 
-class MyStatefulWidget extends StatefulWidget {
-  const MyStatefulWidget({Key? key}) : super(key: key);
-
-  @override
-  State<MyStatefulWidget> createState() => _MyStatefulWidgetState();
-}
-
-_getQuiz() async {
-  final url = Uri.parse('http://10.0.2.2:8080/quiz/WORD');
-  final response = await http.get(url);
-
-  if (response.statusCode == 200) {
-    final List<dynamic> jsonList = json.decode(response.body);
-
-    final List<Map<String, dynamic>> problemList = jsonList.map((json) {
-      return <String, dynamic>{
-        'problem': json['problem'],
-        'answer': List<String>.from(json['answer']),
-        'correct': json['correct']
-      };
-    }).toList();
-
-    return problemList;
-  } else {
-    throw Exception('Failed to load quiz');
-  }
-}
-
-_getData() async {
-  print('asd');
-  final SharedPreferences pref = await SharedPreferences.getInstance();
-  print(await pref.getString("accessToken"));
-}
-
-class _MyStatefulWidgetState extends State<MyStatefulWidget> {
+class _QuizState extends State<Quiz> {
   List<Map<String, dynamic>> problem = [];
 
   int _selectedIndex = 0;
   List _select = List<bool>.filled(4, false, growable: true);
   bool _fail = false;
 
+  _getUser(kind) async {
+    final url = Uri.parse('http://10.0.2.2:8080/user');
+    final SharedPreferences pref = await SharedPreferences.getInstance();
+    final response = await http.get(url, headers: {
+      HttpHeaders.authorizationHeader:
+          'Bearer ${pref.getString("accessToken")}',
+    });
+
+    final correctKindList = [
+      "correctBasic",
+      "correctLanguage",
+      "correctConversation",
+      "correctWord"
+    ];
+
+    return json.decode(response.body)[correctKindList[kind]] as int;
+  }
+
+  _getQuiz(kind) async {
+    final url = Uri.parse('http://10.0.2.2:8080/quiz/$kind');
+    final response = await http.get(url);
+
+    if (response.statusCode == 200) {
+      final List<dynamic> jsonList =
+          json.decode(utf8.decode(response.bodyBytes));
+
+      final List<Map<String, dynamic>> problemList = jsonList.map((json) {
+        return <String, dynamic>{
+          'problem': json['problem'] as String,
+          'answer': List<String>.from(json['answer']),
+          'correct': json['correct'] as String
+        };
+      }).toList();
+
+      return problemList;
+    } else {
+      throw Exception('Failed to load quiz');
+    }
+  }
+
+  _putCorrect(kind) async {
+    final _categoryList = [
+      "BASIC","LANGUEGE","CONVERSATION","WORD"
+    ];
+    final SharedPreferences pref = await SharedPreferences.getInstance();
+    final url = Uri.parse("http://10.0.2.2:8080/quiz/${_categoryList[kind]}");
+    await http.put(url, headers: {
+      HttpHeaders.authorizationHeader:
+      'Bearer ${pref.getString("accessToken")}',
+    });
+  }
+
   @override
   void initState() {
+    // TODO: implement initState
     super.initState();
-
-    _getQuiz().then((value) {
-      setState(() {
-        problem = value;
+    setState(() {
+      _getUser(0).then((res) {
+        setState(() {
+          _selectedIndex = res;
+        });
       });
     });
   }
@@ -77,6 +93,14 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
+    int kind = Provider.of<SelectProvider>(context).select.indexOf(true);
+    List kindList = ["BASIC", "LANGUAGE", "CONVERSATION", "WORD"];
+
+    _getQuiz(kindList[kind]).then((value) {
+      setState(() {
+        problem = value;
+      });
+    });
 
     return Scaffold(
       backgroundColor: const Color(0xff37B0E5),
@@ -175,6 +199,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
                             try {
                               problem[_selectedIndex + 1];
                               _selectedIndex += 1;
+                              _putCorrect(kind);
                             } catch (e) {
                               print('문제 수 초과');
                             }
@@ -233,7 +258,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
         child: AnimatedContainer(
           margin: const EdgeInsets.only(top: 15),
           width: 130,
-          height: 120,
+          height: 135,
           duration: const Duration(milliseconds: 300),
           curve: Curves.ease,
           decoration: _select[n]
@@ -267,14 +292,22 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
                 child: Text(
                   q,
                   style: const TextStyle(
-                      fontSize: 20, fontWeight: FontWeight.w900),
+                      fontSize: 20, fontWeight: FontWeight.w700),
                 ),
               ),
-              Center(
-                child: Text(
-                  '${problem.isNotEmpty ? problem[_selectedIndex]["answer"][n] : ""}',
-                  style: const TextStyle(
-                      fontSize: 27, fontWeight: FontWeight.w900),
+              Container(
+                padding: EdgeInsets.fromLTRB(20, 28, 20, 12),
+                child: Center(
+                  child: Text(
+                    '${problem.isNotEmpty ? problem[_selectedIndex]["answer"][n] : ""}',
+                    style: TextStyle(
+                        fontSize: problem.isNotEmpty
+                            ? problem[_selectedIndex]["answer"][n].length >= 15
+                                ? 15
+                                : 25
+                            : 0,
+                        fontWeight: FontWeight.w700),
+                  ),
                 ),
               )
             ],
