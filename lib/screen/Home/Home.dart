@@ -61,6 +61,15 @@ class _HomeState extends State<Home> {
     return json.decode(response.body);
   }
 
+  @override
+  void initState() {
+    super.initState();
+    _getUser().then((res) {
+      setState(() {
+        _userInfo = res;
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -69,12 +78,10 @@ class _HomeState extends State<Home> {
         .of(context)
         .size
         .width;
-
-    _getUser().then((res) {
-      setState(() {
-        _userInfo = res;
-      });
-    });
+    double height = MediaQuery
+        .of(context)
+        .size
+        .height;
 
     return Scaffold(
       backgroundColor: const Color(0xffE4101E),
@@ -87,7 +94,7 @@ class _HomeState extends State<Home> {
               angle: -30 * math.pi / 180,
               child: Container(
                 width: 120,
-                height: 700,
+                height: height,
                 color: const Color(0xfff6f6f6),
               ),
             ),
@@ -96,8 +103,8 @@ class _HomeState extends State<Home> {
               bottom: 0,
               child: Container(
                 padding: const EdgeInsets.fromLTRB(40, 20, 40, 0),
-                width: width * 1,
-                height: 600,
+                width: width,
+                height: height * 0.78,
                 decoration: BoxDecoration(
                   borderRadius: const BorderRadius.only(
                     topRight: Radius.circular(65),
@@ -116,7 +123,7 @@ class _HomeState extends State<Home> {
                     Center(
                       child: Container(
                         width: width * 0.8,
-                        height: 210,
+                        height: height * 0.27,
                         margin: const EdgeInsets.fromLTRB(0, 20, 0, 20),
                         decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(10),
@@ -138,9 +145,9 @@ class _HomeState extends State<Home> {
                                 Container(
                                   width: width * 0.6,
                                   margin: const EdgeInsets.only(bottom: 10),
-                                  child: const Text(
-                                    "Hi, Lee Dong Hyeon",
-                                    style: TextStyle(
+                                  child: Text(
+                                    "Hi, ${_userInfo["nickName"]}",
+                                    style: const TextStyle(
                                       fontSize: 20,
                                       fontWeight: FontWeight.w700,
                                     ),
@@ -157,7 +164,7 @@ class _HomeState extends State<Home> {
                                   child: const Text(
                                     "오늘 하루도 힘내세요!\n개발자는 당신을 응원합니다!",
                                     style: TextStyle(
-                                      fontSize: 10,
+                                      fontSize: 14,
                                       fontWeight: FontWeight.w700,
                                     ),
                                   ),

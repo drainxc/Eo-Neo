@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:untitled1/provider/select.dart';
 import 'package:untitled1/screen/Auth/Login/login.dart';
+import 'package:untitled1/screen/Nav/nav.dart';
 
 void main() {
-  runApp(
-    const MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {

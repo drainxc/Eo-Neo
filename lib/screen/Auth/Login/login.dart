@@ -67,7 +67,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
           child: SingleChildScrollView(
             child: Container(
               width: width * 0.8,
-              height: height * 0.7,
+              height: height * 0.75,
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(20),
                   color: const Color(0xfff6f6f6),
@@ -157,7 +157,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Container(
-                          margin: const EdgeInsets.only(top: 15),
+                          margin: const EdgeInsets.only(top: 25),
                           child: const Text(
                             "Create Account",
                             style: TextStyle(fontWeight: FontWeight.w500),

@@ -58,7 +58,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
           child: SingleChildScrollView(
             child: Container(
               width: width * 0.8,
-              height: height * 0.7,
+              height: height * 0.75,
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(20),
                   color: const Color(0xfff6f6f6),
@@ -114,8 +114,8 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
                             {
                               _PostSignup({
                                 "accountId": controllers['accountId']?.text,
-                                'nickName': controllers['password']?.text,
-                                'password': controllers['nickName']?.text
+                                'nickName': controllers['nickName']?.text,
+                                'password': controllers['password']?.text
                               }).then((res) => {
                                     Navigator.push(
                                         context,

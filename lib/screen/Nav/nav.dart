@@ -29,12 +29,6 @@ class MyStatefulWidget extends StatefulWidget {
 
 class _MyStatefulWidgetState extends State<MyStatefulWidget> {
   int _selectedIndex = 0;
-  final List<Widget> _widgetOptions = <Widget>[
-    Home(),
-    Quiz(),
-    Plan(),
-    Setting(),
-  ];
 
   void _onItemTapped(int index) {
     setState(() {
@@ -46,7 +40,12 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
   Widget build(BuildContext context) {
     return Scaffold(
         body: Center(
-          child: _widgetOptions.elementAt(_selectedIndex),
+          child: [
+            const Home(),
+            const Quiz(),
+            const Plan(),
+            const Setting(),
+          ][_selectedIndex],
         ),
         bottomNavigationBar: Container(
           decoration: const BoxDecoration(
@@ -84,28 +83,3 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
         ));
   }
 }
-
-// Row(
-//   children: [
-//     Expanded(
-//       flex: 1,
-//       child: Container(
-//         height: 100,
-//         color: Colors.black,
-//         child: Center(
-//           child: Text('hello world',
-//           style: TextStyle(
-//             color: Colors.white
-//           ),),
-//         ),
-//       ),
-//     ),
-//     Expanded(
-//       flex: 1,
-//       child: Container(
-//         height: 100,
-//         color: Colors.blue,
-//       ),
-//     )
-//   ],
-// ),

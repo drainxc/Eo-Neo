@@ -27,6 +27,7 @@ class _QuizState extends State<Quiz> {
     "correctWord": 0
   };
   List _select = List<bool>.filled(4, false, growable: true);
+  List _showAnswer = List<String>.filled(4, "none", growable: true);
   bool _fail = false;
   List kindList = ["BASIC", "LANGUAGE", "CONVERSATION", "WORD"];
   final correctKindList = [
@@ -70,10 +71,8 @@ class _QuizState extends State<Quiz> {
   }
 
   _putCorrect(kind) async {
-    final _categoryList = ["BASIC", "LANGUAGE", "CONVERSATION", "WORD"];
     final SharedPreferences pref = await SharedPreferences.getInstance();
-    final url = Uri.parse("http://10.0.2.2:8080/quiz/${_categoryList[kind]}");
-    print("http://10.0.2.2:8080/quiz/${_categoryList[kind]}");
+    final url = Uri.parse("http://10.0.2.2:8080/quiz/${kindList[kind]}");
     await http.put(url, headers: {
       HttpHeaders.authorizationHeader:
           'Bearer ${pref.getString("accessToken")}',
@@ -88,7 +87,6 @@ class _QuizState extends State<Quiz> {
       _getUser().then((res) {
         setState(() {
           _selectedIndex = res;
-          print(res);
         });
       });
     });
@@ -144,20 +142,22 @@ class _QuizState extends State<Quiz> {
                     child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Text(
-                            '문법',
-                            style: TextStyle(
+                          Text(
+                            '${kindList[kind]}',
+                            style: const TextStyle(
                                 fontSize: 19,
                                 fontWeight: FontWeight.w900,
                                 color: Color(0xff888888)),
                           ),
                           Container(
-                              margin: const EdgeInsets.fromLTRB(10, 20, 0, 0),
+                              margin: const EdgeInsets.fromLTRB(10, 10, 0, 10),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    "Q${_selectedIndex[correctKindList[kind]] + 1}",
+                                    _selectedIndex[correctKindList[kind]] < 5
+                                        ? "Q${_selectedIndex[correctKindList[kind]] + 1}"
+                                        : "축하드립니다!",
                                     style: const TextStyle(
                                         fontSize: 24,
                                         fontWeight: FontWeight.w900),
@@ -166,7 +166,9 @@ class _QuizState extends State<Quiz> {
                                     margin: const EdgeInsets.only(top: 10),
                                     height: 50,
                                     child: Text(
-                                      "${problem.isNotEmpty ? problem[_selectedIndex[correctKindList[kind]]]["problem"] : ""}",
+                                      _selectedIndex[correctKindList[kind]] < 5
+                                          ? "${problem.isNotEmpty ? problem[_selectedIndex[correctKindList[kind]]]["problem"] : ""}"
+                                          : '문제를 모두 맞추셨습니다!',
                                       style: const TextStyle(
                                         fontSize: 20,
                                         fontWeight: FontWeight.w900,
@@ -175,77 +177,110 @@ class _QuizState extends State<Quiz> {
                                   )
                                 ],
                               )),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          Column(
                             children: [
-                              box('A', 0, kind),
-                              box('B', 1, kind),
+                              _selectedIndex[correctKindList[kind]] < 5
+                                  ? Column(
+                                      children: [
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            box('A', 0, kind, width, height),
+                                            box('B', 1, kind, width, height),
+                                          ],
+                                        ),
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            box('C', 2, kind, width, height),
+                                            box('D', 3, kind, width, height),
+                                          ],
+                                        )
+                                      ],
+                                    )
+                                  : Container(
+                                      height: height * 0.35,
+                                      child: const Center(
+                                        child: Text(
+                                          "Congratulation",
+                                          style: TextStyle(
+                                              fontSize: 30,
+                                              fontWeight: FontWeight.w700),
+                                        ),
+                                      ),
+                                    ),
                             ],
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              box('C', 2, kind),
-                              box('D', 3, kind),
-                            ],
-                          ),
+                          )
                         ]),
                   ),
                 ),
                 Center(
-                  child: InkWell(
-                    onTap: () => {
-                      setState(() {
-                        if (_select.contains(true)) {
-                          if (problem[_selectedIndex[correctKindList[kind]]]
-                                  ["answer"][_select.indexOf(true)] ==
-                              problem[_selectedIndex[correctKindList[kind]]]
-                                  ["correct"]) {
-                            try {
-                              problem[
-                                  _selectedIndex[correctKindList[kind]] + 1];
-                              _selectedIndex[correctKindList[kind]] += 1;
-                              _putCorrect(kind);
-                            } catch (e) {
-                              print('문제 수 초과');
-                            }
-                          } else {
-                            _fail = true;
-                            Timer(
-                                const Duration(seconds: 1),
-                                () => setState(() {
-                                      _fail = false;
-                                    }));
-                          }
-                          _select = List<bool>.filled(4, false, growable: true);
-                        }
-                      })
-                    },
-                    child: AnimatedContainer(
-                      margin: const EdgeInsets.fromLTRB(0, 30, 0, 20),
-                      width: width * 0.4,
-                      height: height * 0.06,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        color: _fail
-                            ? const Color(0xffE4101E)
-                            : _select.contains(true)
-                                ? const Color(0xff98E843)
-                                : const Color(0xffbbbbbb),
-                      ),
-                      duration: const Duration(milliseconds: 200),
-                      curve: Curves.ease,
-                      child: const Center(
-                        child: Text(
-                          "Next",
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 20,
-                              color: Color(0xfff6f6f6)),
-                        ),
-                      ),
-                    ),
-                  ),
+                  child: _selectedIndex[correctKindList[kind]] < 5
+                      ? InkWell(
+                          onTap: () => {
+                            setState(() {
+                              if (_select.contains(true)) {
+                                if (problem[_selectedIndex[
+                                            correctKindList[kind]]]["answer"]
+                                        [_select.indexOf(true)] ==
+                                    problem[_selectedIndex[
+                                        correctKindList[kind]]]["correct"]) {
+                                  _showAnswer[_select.indexOf(true)] =
+                                      "success";
+                                  Timer(
+                                      const Duration(seconds: 1),
+                                      () => setState(() {
+                                            _selectedIndex[
+                                                correctKindList[kind]] += 1;
+                                            _showAnswer = List<String>.filled(
+                                                4, "none",
+                                                growable: true);
+                                          }));
+                                  _putCorrect(kind);
+                                } else {
+                                  _fail = true;
+                                  _showAnswer[_select.indexOf(true)] = "fail";
+                                  Timer(
+                                      const Duration(seconds: 1),
+                                      () => setState(() {
+                                            _fail = false;
+                                          }));
+                                }
+                                _select =
+                                    List<bool>.filled(4, false, growable: true);
+                              }
+                            })
+                          },
+                          child: AnimatedContainer(
+                            margin: const EdgeInsets.fromLTRB(0, 30, 0, 20),
+                            width: width * 0.4,
+                            height: height * 0.06,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                              color: _fail
+                                  ? const Color(0xffE4101E)
+                                  : _select.contains(true)
+                                      ? const Color(0xff98E843)
+                                      : const Color(0xffbbbbbb),
+                            ),
+                            duration: const Duration(milliseconds: 200),
+                            curve: Curves.ease,
+                            child: const Center(
+                              child: Text(
+                                "Next",
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 20,
+                                    color: Color(0xfff6f6f6)),
+                              ),
+                            ),
+                          ),
+                        )
+                      : Container(
+                          margin: const EdgeInsets.fromLTRB(0, 30, 0, 20),
+                          height: height * 0.06),
                 )
               ])),
         ],
@@ -253,7 +288,7 @@ class _QuizState extends State<Quiz> {
     );
   }
 
-  Widget box(String q, int n, kind) {
+  Widget box(String q, int n, kind, width, height) {
     return InkWell(
         onTap: () => {
               setState(() {
@@ -263,18 +298,25 @@ class _QuizState extends State<Quiz> {
             },
         child: AnimatedContainer(
           margin: const EdgeInsets.only(top: 15),
-          width: 130,
-          height: 135,
-          duration: const Duration(milliseconds: 300),
+          width: width * 0.33,
+          height: height * 0.165,
+          duration: const Duration(milliseconds: 200),
           curve: Curves.ease,
           decoration: _select[n]
               ? BoxDecoration(
-                  boxShadow: const [
-                    BoxShadow(
-                      color: Color.fromRGBO(0, 0, 0, 0.125),
+                  boxShadow: [BoxShadow(
+                      color: _showAnswer[n] == "none"
+                          ? Color.fromRGBO(0, 0, 0, 0.125)
+                          : _showAnswer[n] == "fail"
+                          ? const Color(0xffFAE0E0)
+                          : const Color(0xffDEF1DE),
                     ),
                     BoxShadow(
-                      color: Color(0xfff6f6f6),
+                      color: _showAnswer[n] == "none"
+                          ? const Color(0xfff6f6f6)
+                          : _showAnswer[n] == "fail"
+                              ? const Color(0xffFAE0E0)
+                              : const Color(0xffDEF1DE),
                       spreadRadius: -4.0,
                       blurRadius: 4.0,
                     ),
@@ -282,10 +324,18 @@ class _QuizState extends State<Quiz> {
                   borderRadius: BorderRadius.circular(10),
                 )
               : BoxDecoration(
-                  color: const Color(0xfff6f6f6),
-                  boxShadow: const [
+                  color: _showAnswer[n] == "none"
+                      ? const Color(0xfff6f6f6)
+                      : _showAnswer[n] == "fail"
+                          ? const Color(0xffFAE0E0)
+                          : const Color(0xffDEF1DE),
+                  boxShadow: [
                     BoxShadow(
-                      color: Color.fromRGBO(0, 0, 0, 0.25),
+                      color:_showAnswer[n] == "none"
+                          ?  const Color.fromRGBO(0, 0, 0, 0.25)
+                          : _showAnswer[n] == "fail"
+                          ? const Color(0xffFAE0E0)
+                          : const Color(0xffDEF1DE),
                       blurRadius: 5.0,
                     )
                   ],
@@ -302,7 +352,7 @@ class _QuizState extends State<Quiz> {
                 ),
               ),
               Container(
-                padding: EdgeInsets.fromLTRB(20, 28, 20, 12),
+                padding: const EdgeInsets.fromLTRB(20, 28, 20, 12),
                 child: Center(
                   child: Text(
                     '${problem.isNotEmpty ? problem[_selectedIndex[correctKindList[kind]]]["answer"][n] : ""}',
@@ -312,8 +362,8 @@ class _QuizState extends State<Quiz> {
                                             ["answer"][n]
                                         .length >=
                                     15
-                                ? 15
-                                : 25
+                                ? 14
+                                : 23
                             : 0,
                         fontWeight: FontWeight.w700),
                   ),
